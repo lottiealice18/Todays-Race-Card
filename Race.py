@@ -65,7 +65,7 @@ def display_horses_last_n_days():
     # Convert 'Date Last Run' column to numeric
     df['Date Last Run'] = pd.to_numeric(df['Date Last Run'], errors='coerce')
 
-    # Filter out rows where 'Date Last Run' is NaN
+    # Filters out rows where 'Date Last Run' is NaN
     df_filtered = df[df['Date Last Run'].notnull()]
 
     # Calculate the maximum number of days since the last run
