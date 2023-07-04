@@ -15,7 +15,7 @@ df['Date'] = df['Date'].dt.strftime('%d/%m/%Y')
 race_types = [
     'Selling Stakes',
     'Claiming Stakes',
-    'Selling Handicap',
+    'Selling Handicaap',
     'Nursery',
     'Maiden',
     'Amateur',
