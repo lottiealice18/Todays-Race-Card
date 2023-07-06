@@ -11,7 +11,7 @@ df['Date'] = pd.to_datetime(df['Date'], format='%Y%m%d')
 
 # Format date column as "DD/MM/YYYY"
 df['Date'] = df['Date'].dt.strftime('%d/%m/%Y')
-# Race types and class options (used in multiple functions)
+# Race type and class options (used in multiple functions)
 race_types = [
     'Selling Stakes',
     'Claiming Stakes',
