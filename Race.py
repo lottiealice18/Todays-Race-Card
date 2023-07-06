@@ -102,7 +102,7 @@ def display_horses_last_n_days():
 # Function to display race data
 def display_race_data():
     # Create radio buttons for venue selection
-    selected_venue = st.button('Select Venue', df['Venue'].unique())
+    selected_venue = st.radio('Select Venue', df['Venue'].unique())
 
     # Filter the DataFrame based on the selected venue
     df_filtered_venue = df[df['Venue'] == selected_venue]
