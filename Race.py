@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
-# Read the Excel file and drop rows where Country is South Africas
+# Read the Excel file and drop rows where Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230707.csv')
 
 # Change the column name from 'RDB Rating' to 'Stats Ratings'
@@ -406,8 +406,8 @@ def filter_rank():
     # Rename the 'RDB Rank' column to 'Stats Ratings'
     df_rank = df_rank.rename(columns={'RDB Rating': 'Stats Ratings'})
 
-    # Remove the 'Stats Ratings' column from the DataFrame
-   
+    # Remove the 'RDB Rank' column from the DataFrame
+    df_rank = df_rank.drop('RDB Rank', axis=1)
 
     if len(df_rank) > 0:
         st.dataframe(df_rank)
