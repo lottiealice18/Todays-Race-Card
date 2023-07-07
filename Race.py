@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+
+
 # Read the Excel fie and drop rows where Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/6th%20July.csv')
 df = df[df['Country'] != 'South Africa']
@@ -293,7 +293,7 @@ def find_lowest_weight_horses(df):
     return races
 def horse_search():
     # Read the CSV file and drop rows where Country is South Africa
-    document_url = 'https://docs.google.com/spreadsheets/d/1sZ5Vb3-GGx2aXe3WbqidJVjDmBEkISMV/edit?usp=sharing'
+   df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/6th%20July.csv')
 
     # User input for horse name
     horse_name = st.text_input("Enter the horse's name:", value='', help='Enter the name of the horse you want to search for.')
