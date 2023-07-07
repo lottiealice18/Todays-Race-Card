@@ -325,36 +325,77 @@ def find_lowest_weight_horses(df):
 
     return races
 
+
+import pandas as pd
+
 def horse_search():
-    # Read the CSV file and drop rows where Country is South Africa
-    csv_url = 'https://drive.google.com/uc?id=1W79DC6em9LffBxNjakRmK7vXuenmAhHu'  # Replace with the actual file ID from Google Drive
-    df = pd.read_csv(csv_url)
+    # Read the current day's CSV file and drop rows where Country is South Africa
+    current_day_csv_url = 'https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230707.csv'  # Replace with the actual URL for the current day's CSV file
+    df_current_day = pd.read_csv(current_day_csv_url)
+
+    # Convert date format
+    df_current_day['Date'] = pd.to_datetime(df_current_day['Date'], format='%Y%m%d').dt.strftime('%d/%m/%Y')
+
+    # Rename 'OR' column to 'Official Rating'
+    df_current_day = df_current_day.rename(columns={'OR': 'Official Rating'})
+
+    # Drop RDB Rank column
+    df_current_day = df_current_day.drop(columns=['RDB Rank'])
+
+    # Rename columns
+    df_current_day = df_current_day.rename(columns={'WFF Rank': 'Wallis Flash Form', 'RPR': 'Racing Post Rating', 'RDB Rating': 'Statistical Ratings'})
+
+    # Read the historical races CSV file
+    historical_csv_url = 'https://drive.google.com/uc?id=1W79DC6em9LffBxNjakRmK7vXuenmAhHu'  # Replace with the actual file ID from Google Drive
+    df_historical = pd.read_csv(historical_csv_url)
 
     horse_name = st.text_input("Enter the horse's name:", value='', help='Enter the name of the horse you want to search for.')
     horse_name = horse_name.strip()  # Trim white spaces
     horse_name = horse_name.title()  # Convert to title case to handle case sensitivity
 
     if horse_name:  # If the horse name is not empty
-        # Filter the DataFrame for races that the specified horse has run in
-        df_horse = df[df['Horse'].str.contains(horse_name, case=False, na=False)]  # Use 'case=False' to make the search case-insensitive
+        # Filter the current day's DataFrame for races that the specified horse has run in
+        df_current_day_horse = df_current_day[df_current_day['Horse'].str.contains(horse_name, case=False, na=False)]
 
-        if len(df_horse) > 0:
+        # Filter the historical races DataFrame for races that the specified horse has run in
+        df_historical_horse = df_historical[df_historical['Horse'].str.contains(horse_name, case=False, na=False)]
+
+        if len(df_current_day_horse) > 0 or len(df_historical_horse) > 0:
             st.subheader(f"Horse: {horse_name}")
-            st.dataframe(df_horse)
 
-            # Generate download link for CSV
-            csv_horse = df_horse.to_csv(index=False)
-            st.download_button(
-                label=f'Download {horse_name} Races CSV',
-                data=csv_horse,
-                file_name=f'{horse_name.replace(" ", "_").replace("/", "_")}_races_data.csv',
-                mime='text/csv'
-            )
+            if len(df_current_day_horse) > 0:
+                st.write("Current Day Races:")
+                st.dataframe(df_current_day_horse)
+
+            if len(df_historical_horse) > 0:
+                st.write("Historical Races:")
+                st.dataframe(df_historical_horse)
+
+            # Generate download links for CSVs
+            if len(df_current_day_horse) > 0:
+                csv_current_day_horse = df_current_day_horse.to_csv(index=False)
+                st.download_button(
+                    label=f'Download {horse_name} Current Day Races CSV',
+                    data=csv_current_day_horse,
+                    file_name=f'{horse_name.replace(" ", "_").replace("/", "_")}_current_day_races_data.csv',
+                    mime='text/csv'
+                )
+
+            if len(df_historical_horse) > 0:
+                csv_historical_horse = df_historical_horse.to_csv(index=False)
+                st.download_button(
+                    label=f'Download {horse_name} Historical Races CSV',
+                    data=csv_historical_horse,
+                    file_name=f'{horse_name.replace(" ", "_").replace("/", "_")}_historical_races_data.csv',
+                    mime='text/csv'
+                )
+
         else:
             st.write("No data available for the specified horse.")
 
     else:
         st.write("Please enter a horse name.")
+
 def display_top_speed():
     # Filter the DataFrame for races that have a top speed rating
     df_top_speed = df[df['Top Speed'] != '-']
