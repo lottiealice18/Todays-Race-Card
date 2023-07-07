@@ -4,7 +4,7 @@ import streamlit as st
 
 
 # Read the Excel fie and drop rows where Country is South Africa
-df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/6th%20July.csv')
+df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/Todays_Card_20230707.csv')
 df = df[df['Country'] != 'South Africa']
 
 # Convert date column to datetime type
@@ -358,7 +358,7 @@ def display_top_speed():
 
 def filter_rank():
     # Read historical data
-    df_hist = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/6th%20July.csv')
+    df_hist = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/Todays_Card_20230707.csv')
 
     # Convert date column to datetime type
     df_hist['Date'] = pd.to_datetime(df_hist['Date'], format='%Y%m%d')
