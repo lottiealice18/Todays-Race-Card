@@ -378,10 +378,10 @@ def display_top_speed():
             top_speed_horses.set_index('Horse', inplace=True)
 
             # Move the 'Top Speed' column next to the index column
-            top_speed_horses = top_speed_horses.reindex(columns=['Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer'])
+            top_speed_horses = top_speed_horses.reindex(columns=['Horse', 'Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer'])
 
             # Reset the index to the default column number
-            top_speed_horses.reset_index(drop=True, inplace=True)
+            top_speed_horses.reset_index(drop=False, inplace=True)
 
             st.dataframe(top_speed_horses)
 
