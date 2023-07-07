@@ -371,13 +371,20 @@ def display_top_speed():
         top_speed_horses = top_speed_horses[['Time', 'Horse', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer']]
 
         if len(top_speed_horses) > 0:
+            # Set 'Horse' as the index
+            top_speed_horses.set_index('Horse', inplace=True)
+
             # Sort the DataFrame by 'Time' column
             top_speed_horses = top_speed_horses.sort_values('Time')
 
-            st.dataframe(top_speed_horses)
+            # Remove 'Horse' from the displayed columns
+            columns_to_display = ['Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer']
+            df_display = top_speed_horses[columns_to_display]
+
+            st.dataframe(df_display)
 
             # Generate download link for CSV
-            csv_data = top_speed_horses.to_csv(index=False)
+            csv_data = top_speed_horses.to_csv(index=True)
             st.download_button(
                 label='Download Top Speed Horses CSV',
                 data=csv_data,
@@ -388,7 +395,6 @@ def display_top_speed():
             st.write("No top speed horses found.")
     else:
         st.write("No data available for top speeded horses.")
-
 
 def filter_rank():
     # Read historical data
