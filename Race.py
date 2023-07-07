@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
-# Read the Excel file and drop rows where Country is South Africa.
+# Read the Excel file and drop rows where Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230707.csv')
 
 # Change the column name from 'RDB Rating' to 'Stats Ratings'
@@ -403,8 +403,11 @@ def filter_rank():
     # Filter the DataFrame for races that have a rank
     df_rank = df_hist[(df_hist['WFF Rank'] == 1) & (df_hist['RDB Rank'] == 1)]
 
-    # Remove the 'RDB Rank' column from the DataFrame
-    df_rank = df_rank.drop(columns=['RDB Rank'])
+    # Rename the 'RDB Rank' column to 'Stats Ratings'
+    df_rank = df_rank.rename(columns={'RDB Rating': 'Stats Ratings'})
+
+    # Remove the 'Stats Ratings' column from the DataFrame
+   
 
     if len(df_rank) > 0:
         st.dataframe(df_rank)
@@ -572,7 +575,7 @@ def display_course_and_distance():
 
 def main_page():
     st.title("STATS AND SYSTEMS")
-    
+
 
     option = st.sidebar.radio(
         "Select a section:",
