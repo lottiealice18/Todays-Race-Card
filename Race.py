@@ -293,7 +293,7 @@ def find_lowest_weight_horses(df):
     return races
 def horse_search():
     # Read the CSV file and drop rows where Country is South Africa
-    csv_url = 'https://drive.google.com/uc?id=12WmRtjuy9fltK8h4Il_N3qKvbnCi_8dz'  # Replace with the actual file ID from Google Drive
+    csv_url = 'https://drive.google.com/uc?id=1W79DC6em9LffBxNjakRmK7vXuenmAhHu'  # Replace with the actual file ID from Google Drive
     df = pd.read_csv(csv_url)
 
     horse_name = st.text_input("Enter the horse's name:", value='', help='Enter the name of the horse you want to search for.')
