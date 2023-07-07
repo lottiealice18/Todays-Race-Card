@@ -371,7 +371,8 @@ def display_top_speed():
         top_speed_horses = top_speed_horses[['Time', 'Horse', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer']]
 
         if len(top_speed_horses) > 0:
-            # Set 'Horse' as the index
+            # Set 'Horse' as the index and display the complete horse name
+            top_speed_horses['Horse'] = top_speed_horses['Horse'].str.split('(').str[0]  # Extract the complete horse name
             top_speed_horses.set_index('Horse', inplace=True)
 
             # Sort the DataFrame by 'Time' column
@@ -395,6 +396,7 @@ def display_top_speed():
             st.write("No top speed horses found.")
     else:
         st.write("No data available for top speeded horses.")
+
 
 def filter_rank():
     # Read historical data
