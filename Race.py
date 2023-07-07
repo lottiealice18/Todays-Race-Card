@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
-# Read the Excel file and drop rows where Country is South Africas
+# Read the Excel file and drop rows where Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230707.csv')
 
 # Change the column name from 'RDB Rating' to 'Stats Ratings'
@@ -410,10 +410,17 @@ def filter_rank():
     df_rank = df_rank.drop('RDB Rank', axis=1)
 
     if len(df_rank) > 0:
-        st.dataframe(df_rank)
+        # Set 'Horse' as the index
+        df_rank.set_index('Horse', inplace=True)
+
+        # Select specific columns to display
+        columns_to_display = ['Venue', 'Time', 'Jockey', 'Trainer']
+        df_display = df_rank[columns_to_display]
+
+        st.dataframe(df_display)
 
         # Download link for CSV
-        csv_filtered = df_rank.to_csv(index=False)
+        csv_filtered = df_rank.to_csv(index=True)
         st.download_button(
             label='Download Filtered Data CSV',
             data=csv_filtered,
@@ -564,8 +571,9 @@ def display_course_and_distance():
     else:
         df_filtered = pd.DataFrame()
 
-    # Remove the 'RDB Rank' column from the DataFrame
-    df_filtered = df_filtered.drop(columns=['RDB Rank'])
+    # Check if 'RDB Rank' column exists before dropping it
+    if 'RDB Rank' in df_filtered.columns:
+        df_filtered = df_filtered.drop(columns=['RDB Rank'])
 
     if len(df_filtered) > 0:
         st.dataframe(df_filtered)
