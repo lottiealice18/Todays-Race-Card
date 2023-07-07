@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
-# Read the Excel file and drop rows where Country is South Africa
+# Read the Excel fie and drop rows where Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/6th%20July.csv')
 df = df[df['Country'] != 'South Africa']
 
