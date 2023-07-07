@@ -368,24 +368,25 @@ def display_top_speed():
 
         # Find the horse(s) with the maximum top speed for each race
         top_speed_horses = df_top_speed.groupby('Race Name').apply(lambda x: x.loc[x['Top Speed'].idxmax()]).reset_index(drop=True)
-        top_speed_horses = top_speed_horses[['Time', 'Horse', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer']]
+        top_speed_horses = top_speed_horses[['Horse', 'Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer']]
 
         if len(top_speed_horses) > 0:
-            # Set 'Horse' as the index and display the complete horse name
-            top_speed_horses['Horse'] = top_speed_horses['Horse'].str.split('(').str[0]  # Extract the complete horse name
-            top_speed_horses.set_index('Horse', inplace=True)
-
             # Sort the DataFrame by 'Time' column
             top_speed_horses = top_speed_horses.sort_values('Time')
 
-            # Remove 'Horse' from the displayed columns
-            columns_to_display = ['Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer']
-            df_display = top_speed_horses[columns_to_display]
+            # Set the 'Horse' column as the index temporarily
+            top_speed_horses.set_index('Horse', inplace=True)
 
-            st.dataframe(df_display)
+            # Move the 'Top Speed' column next to the index column
+            top_speed_horses = top_speed_horses.reindex(columns=['Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer'])
+
+            # Reset the index to the default column number
+            top_speed_horses.reset_index(drop=True, inplace=True)
+
+            st.dataframe(top_speed_horses)
 
             # Generate download link for CSV
-            csv_data = top_speed_horses.to_csv(index=True)
+            csv_data = top_speed_horses.to_csv(index=False)
             st.download_button(
                 label='Download Top Speed Horses CSV',
                 data=csv_data,
@@ -396,6 +397,7 @@ def display_top_speed():
             st.write("No top speed horses found.")
     else:
         st.write("No data available for top speeded horses.")
+
 
 
 def filter_rank():
