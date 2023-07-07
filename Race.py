@@ -5,7 +5,7 @@ import streamlit as st
 
 # Read the Excel fie and drop rows where Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/Todays_Card_20230707.csv')
-df = df[df['Country'] != 'South Africa']
+
 
 # Convert date column to datetime type
 df['Date'] = pd.to_datetime(df['Date'], format='%Y%m%d')
