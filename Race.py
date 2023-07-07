@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
-# Read the Excel file and drop row where Country is South Africa
+# Read the Excel file and drop rows where Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230707.csv')
 
 # Change the column name from 'RDB Rating' to 'Stats Ratings'
@@ -75,10 +75,10 @@ def display_main_data():
 
 
 def display_horses_last_n_days():
-    # Convert 'Date Last Run' column to numeric
+    # Convert 'Days Since Last Run' column to numeric
     df['Days Since Last Run'] = pd.to_numeric(df['Days Since Last Run'], errors='coerce')
 
-    # Filters out rows where 'Date Last Run' is NaN
+    # Filters out rows where 'Days Since Last Run' is NaN
     df_filtered = df[df['Days Since Last Run'].notnull()]
 
     # Calculate the maximum number of days since the last run
@@ -91,10 +91,9 @@ def display_horses_last_n_days():
     # Filter the DataFrame for horses that ran in the last N days
     df_lastNdays = df_filtered[df_filtered['Days Since Last Run'] <= n_days]
 
-
-
-    # Drop the 'RDB Rank' column
-    df_lastNdays = df_lastNdays.drop('RDB Rank', axis=1)
+    # Select the desired columns
+    columns_to_show = ['Venue', 'Horse', 'Days Since Last Run', 'Jockey', 'Trainer']
+    df_lastNdays = df_lastNdays[columns_to_show]
 
     # Sort the DataFrame by 'Days Since Last Run' column in descending order
     df_lastNdays = df_lastNdays.sort_values(by='Days Since Last Run', ascending=False)
@@ -572,14 +571,15 @@ def display_course_and_distance():
 
 
 def main_page():
-    st.title("Horse Racing Stats - Today's Card")
+    st.title("STATS AND SYSTEMS")
+    
 
     option = st.sidebar.radio(
         "Select a section:",
         (
             'Todays Full Race Card as CSV', 'Todays Races By Venue and Time', 'Days Since Last Run',
             'Display Class Data', 'Change of Class', 'Type of Race', 'Find Lowest Weight Horses', 'Horse Search',
-            'Top Speed', 'Rank Filter', 'Search by Trainer', 'Course And Distance', 'Jockey Search', 'Surface Type',
+            'Top Speed', 'Todays Statistical Selections', 'Search by Trainer', 'Course And Distance', 'Jockey Search', 'Surface Type',
             'Handicap/Non-Handicap'
         )
     )
@@ -615,7 +615,7 @@ def main_page():
     elif option == 'Type of Race':
         st.subheader('Type of Race')
         st.markdown(
-            'This page displays information about the specific race types, such as Hurdle, Apprentice, Juvenile, etc. Understanding the race types can help in analyzing the performance of horses in different race categories.')
+            'This page displays information about the specific race types, such as Hurdle, Apprentice, Juvenile, etc. Use the multi-select function to create a downloadable race card with the types of race you are interested in. Understanding the race types can help in analyzing the performance of horses in different race categories.')
         display_race_type_data()
 
 
@@ -646,8 +646,8 @@ def main_page():
             'This page displays the top speeded horses in today\'s races. It provides insights into the performance capabilities of the horses.')
         display_top_speed()
 
-    elif option == 'Rank Filter':
-        st.subheader('Rank Filter')
+    elif option == 'Todays Statistical Selections':
+        st.subheader('Statistical Selections')
         st.markdown(
             'This page provides a list of horses that calculations suggest have the best chance of winning based on a combination of statistics. The rank filter is designed to help you identify potential contenders for a race. However, please note that horse racing is a complex sport and outcomes are never guaranteed. The information should be used as a guide and further analysis is recommended.')
         filter_rank()
