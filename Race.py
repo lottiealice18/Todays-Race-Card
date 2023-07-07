@@ -355,8 +355,6 @@ def horse_search():
 
     else:
         st.write("Please enter a horse name.")
-
-
 def display_top_speed():
     # Filter the DataFrame for races that have a top speed rating
     df_top_speed = df[df['Top Speed'] != '-']
@@ -368,20 +366,14 @@ def display_top_speed():
 
         # Find the horse(s) with the maximum top speed for each race
         top_speed_horses = df_top_speed.groupby('Race Name').apply(lambda x: x.loc[x['Top Speed'].idxmax()]).reset_index(drop=True)
-        top_speed_horses = top_speed_horses[['Horse', 'Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer']]
+        top_speed_horses = top_speed_horses[['Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer', 'Horse']]
 
         if len(top_speed_horses) > 0:
             # Sort the DataFrame by 'Time' column
             top_speed_horses = top_speed_horses.sort_values('Time')
 
-            # Set the 'Horse' column as the index temporarily
-            top_speed_horses.set_index('Horse', inplace=True)
-
-            # Move the 'Top Speed' column next to the index column
-            top_speed_horses = top_speed_horses.reindex(columns=['Horse', 'Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer'])
-
-            # Reset the index to the default column number
-            top_speed_horses.reset_index(drop=False, inplace=True)
+            # Reorder the columns with 'Horse' as the first column
+            top_speed_horses = top_speed_horses[['Horse', 'Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer']]
 
             st.dataframe(top_speed_horses)
 
@@ -397,8 +389,6 @@ def display_top_speed():
             st.write("No top speed horses found.")
     else:
         st.write("No data available for top speeded horses.")
-
-
 
 def filter_rank():
     # Read historical data
@@ -420,17 +410,17 @@ def filter_rank():
     df_rank = df_rank.drop('RDB Rank', axis=1)
 
     if len(df_rank) > 0:
-        # Set 'Horse' as the index
-        df_rank.set_index('Horse', inplace=True)
+        # Reset the index and move 'Horse' back as a column
+        df_rank.reset_index(inplace=True)
 
         # Select specific columns to display
-        columns_to_display = ['Venue', 'Time', 'Jockey', 'Trainer']
+        columns_to_display = ['Horse', 'Venue', 'Time', 'Jockey', 'Trainer']
         df_display = df_rank[columns_to_display]
 
         st.dataframe(df_display)
 
         # Download link for CSV
-        csv_filtered = df_rank.to_csv(index=True)
+        csv_filtered = df_rank.to_csv(index=False)
         st.download_button(
             label='Download Filtered Data CSV',
             data=csv_filtered,
