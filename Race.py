@@ -3,7 +3,7 @@ import numpy as np
 import streamlit as st
 
 
-# Read the Excel fie and drop rows where Country is South Africa
+# Read the Excel fie and drop rows wheres Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Racing/main/Todays_Card_20230707.csv')
 
 
