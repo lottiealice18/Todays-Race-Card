@@ -2,16 +2,23 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
-
-# Read the Excel fie and drop rows wheres Countr is South Africa
+# Read the Excel file and drop rows where Country is South Africa
 df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230707.csv')
 
+# Change the column name from 'RDB Rating' to 'Stats Ratings'
+df = df.rename(columns={'RDB Rating': 'Stats Ratings'})
+# Change the column name from 'WFF' to 'Wallis Flash Form'
+df = df.rename(columns={'WFF Rank': 'Wallis Flash Form Rank'})
 
+df = df.rename(columns={'Date Last Run': 'Days Since Last Run'})
+# Change the column name from 'RPR' to 'Racing Post Rating'
+df = df.rename(columns={'RPR': 'Racing Post Rating'})
 # Convert date column to datetime type
 df['Date'] = pd.to_datetime(df['Date'], format='%Y%m%d')
 
 # Format date column as "DD/MM/YYYY"
 df['Date'] = df['Date'].dt.strftime('%d/%m/%Y')
+
 # Race type and class options (used in multiple functions)
 race_types = [
     'Selling Stakes',
@@ -49,6 +56,9 @@ def display_main_data():
     # Sort the DataFrame by 'Time' column in ascending order
     df_sorted = df.sort_values(by='Time')
 
+    # Drop the 'RDB Rank' column
+    df_sorted = df_sorted.drop('RDB Rank', axis=1)
+
     # Display the race cards in time order
     st.dataframe(df_sorted)
 
@@ -61,26 +71,30 @@ def display_main_data():
         mime='text/csv'
     )
 
+# ... (Rest of the code remains the same)
+
 
 def display_horses_last_n_days():
     # Convert 'Date Last Run' column to numeric
-    df['Date Last Run'] = pd.to_numeric(df['Date Last Run'], errors='coerce')
+    df['Days Since Last Run'] = pd.to_numeric(df['Days Since Last Run'], errors='coerce')
 
     # Filters out rows where 'Date Last Run' is NaN
-    df_filtered = df[df['Date Last Run'].notnull()]
+    df_filtered = df[df['Days Since Last Run'].notnull()]
 
     # Calculate the maximum number of days since the last run
-    max_days = df_filtered['Date Last Run'].max()
+    max_days = df_filtered['Days Since Last Run'].max()
     max_days = int(max_days) if pd.notnull(max_days) else 1
 
     # User input for number of days
     n_days = st.number_input('Enter the maximum number of days since the last run', min_value=1, max_value=int(max_days), value=int(max_days), help='Enter a number between 1 and the maximum number of days available.')
 
     # Filter the DataFrame for horses that ran in the last N days
-    df_lastNdays = df_filtered[df_filtered['Date Last Run'] <= n_days]
+    df_lastNdays = df_filtered[df_filtered['Days Since Last Run'] <= n_days]
 
-    # Rename the column to 'Days Since Last Run'
-    df_lastNdays = df_lastNdays.rename(columns={'Date Last Run': 'Days Since Last Run'})
+
+
+    # Drop the 'RDB Rank' column
+    df_lastNdays = df_lastNdays.drop('RDB Rank', axis=1)
 
     # Sort the DataFrame by 'Days Since Last Run' column in descending order
     df_lastNdays = df_lastNdays.sort_values(by='Days Since Last Run', ascending=False)
@@ -107,6 +121,9 @@ def display_race_data():
 
     # Filter the DataFrame based on the selected venue
     df_filtered_venue = df[df['Venue'] == selected_venue]
+
+    # Drop the 'RDB Rank' column
+    df_filtered_venue = df_filtered_venue.drop('RDB Rank', axis=1)
 
     # Create dropdown for race times
     race_times = df_filtered_venue['Time'].unique()
@@ -165,6 +182,9 @@ def display_class_data():
                 # Filter the DataFrame for the selected race time
                 df_race = df_filtered[df_filtered['Time'] == time]
 
+                # Drop the 'RDB Rank' column
+                df_race = df_race.drop('RDB Rank', axis=1)
+
                 # Display the race title
                 st.subheader(f"Race at {time}")
 
@@ -181,6 +201,9 @@ def display_class_data():
                 )
         else:
             st.write("No horses found in the selected class.")
+
+        # Drop the 'RDB Rank' column from the filtered DataFrame
+        df_filtered = df_filtered.drop('RDB Rank', axis=1)
 
         # Download link for CSV
         csv = df_filtered.to_csv(index=False)
@@ -209,6 +232,9 @@ def change_of_class():
     # Filter the DataFrame based on the selected class change
     df_filtered_change = df[df['Class Change'] == selected_change]
 
+    # Drop the 'RDB Rank' column from the filtered DataFrame
+    df_filtered_change = df_filtered_change.drop('RDB Rank', axis=1)
+
     # Display the races with the selected class change
     if len(df_filtered_change) > 0:
         st.dataframe(df_filtered_change)
@@ -223,7 +249,6 @@ def change_of_class():
         file_name='class_change_races.csv',
         mime='text/csv'
     )
-
 
 # Function to display race type data
 def display_race_type_data():
@@ -243,6 +268,9 @@ def display_race_type_data():
         if len(df_filtered) > 0:
             # Sort the filtered DataFrame by 'Time' column in ascending order
             df_filtered = df_filtered.sort_values(by='Time')
+
+            # Drop the 'RDB Rank' column from the filtered DataFrame
+            df_filtered = df_filtered.drop('RDB Rank', axis=1)
 
             # Display the DataFrame of races matching the selected race types
             st.write("Races:")
@@ -264,8 +292,6 @@ def display_race_type_data():
 
 # Function to find and display races with the lowest weight horses
 def find_lowest_weight_horses(df):
-    df = df[df['Country'] != 'South Africa']
-
     df['Weight'] = pd.to_numeric(df['Weight'], errors='coerce')
     grouped = df.groupby('Time')
 
@@ -288,9 +314,18 @@ def find_lowest_weight_horses(df):
         weight_difference = next_horse['Weight'] - lowest_weight
 
         if weight_difference >= 0.5:
-            races.append(sorted_data)
+            # Select the specific columns for display
+            selected_columns = ['Horse', 'Weight', 'Venue', 'Time', 'Jockey', 'Trainer']
+            race_data = sorted_data[selected_columns]
+
+            # Append race data to the list
+            races.append(race_data)
+
+    # Provide instructions to the user
+    st.write("The horse listed at the top of each race is the lowest rated horse. Study these races further to gather more insights.")
 
     return races
+
 def horse_search():
     # Read the CSV file and drop rows where Country is South Africa
     csv_url = 'https://drive.google.com/uc?id=1W79DC6em9LffBxNjakRmK7vXuenmAhHu'  # Replace with the actual file ID from Google Drive
@@ -369,6 +404,9 @@ def filter_rank():
     # Filter the DataFrame for races that have a rank
     df_rank = df_hist[(df_hist['WFF Rank'] == 1) & (df_hist['RDB Rank'] == 1)]
 
+    # Remove the 'RDB Rank' column from the DataFrame
+    df_rank = df_rank.drop(columns=['RDB Rank'])
+
     if len(df_rank) > 0:
         st.dataframe(df_rank)
 
@@ -393,6 +431,9 @@ def search_by_trainer():
     if selected_trainer:
         df_filtered = df[df['Trainer'] == selected_trainer]
 
+        # Remove the 'RDB Rank' column from the DataFrame
+        df_filtered = df_filtered.drop(columns=['RDB Rank'])
+
         st.dataframe(df_filtered)
 
         # Provide option to download filtered data
@@ -403,6 +444,7 @@ def search_by_trainer():
             file_name="filtered_data.csv",
             mime="text/csv"
         )
+
 def jockey_search():
     # User input for Jockey filter
     jockeys = [''] + sorted(df['Jockey'].unique())
@@ -411,6 +453,9 @@ def jockey_search():
     # Filter the DataFrame based on the selected jockey
     if selected_jockey:
         df_filtered = df[df['Jockey'] == selected_jockey]
+
+        # Remove the 'RDB Rank' column from the DataFrame
+        df_filtered = df_filtered.drop(columns=['RDB Rank'])
 
         st.dataframe(df_filtered)
 
@@ -436,6 +481,9 @@ def display_surface_type_data():
     df_filtered = df[df['Surface Type'] == selected_surface_type]
 
     if len(df_filtered) > 0:
+        # Drop the 'RDB Rank' column from the DataFrame
+        df_filtered = df_filtered.drop(columns=['RDB Rank'])
+
         # Display the filtered DataFrame
         st.dataframe(df_filtered)
 
@@ -457,6 +505,9 @@ def display_handicap_data():
     df_handicap = df[df['Handi/Non Handi'] == selected_handicap]
 
     if len(df_handicap) > 0:
+        # Drop the 'RDB Rank' column from the DataFrame
+        df_handicap = df_handicap.drop(columns=['RDB Rank'])
+
         # Display the filtered DataFrame
         st.dataframe(df_handicap)
 
@@ -491,9 +542,9 @@ def display_race_category_data():
             file_name='race_category_data.csv',
             mime='text/csv'
         )
+
     else:
         st.write("No races found for 'Flat/Jump' category.")
-
 
 def display_course_and_distance():
     st.write("This page allows filtering races based on Course and Distance Filters. You can select: Course Winner, Distance Winner, and/or Course & Distance Winner.")
@@ -510,6 +561,9 @@ def display_course_and_distance():
         df_filtered = df[df['Course & Distance Winner'] == 'Y']
     else:
         df_filtered = pd.DataFrame()
+
+    # Remove the 'RDB Rank' column from the DataFrame
+    df_filtered = df_filtered.drop(columns=['RDB Rank'])
 
     if len(df_filtered) > 0:
         st.dataframe(df_filtered)
