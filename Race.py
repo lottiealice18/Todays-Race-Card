@@ -433,7 +433,7 @@ def display_top_speed():
 
 def filter_rank():
     # Read historical data
-    df_hist = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230707.csv')
+    df_hist = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230708.csv')
 
     # Convert date column to datetime type
     df_hist['Date'] = pd.to_datetime(df_hist['Date'], format='%Y%m%d')
