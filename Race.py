@@ -3,7 +3,7 @@ import numpy as np
 import streamlit as st
 
 # Read the Excel file and drop rows where Country is South Africa
-df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/9thJuly.csv')
+df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230709.csv')
 
 # Change the column name from 'RDB Rating' to 'Stats Ratings'
 df = df.rename(columns={'RDB Rating': 'Stats Ratings'})
@@ -433,7 +433,7 @@ def display_top_speed():
 
 def filter_rank():
     # Read historical data
-    df_hist = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/9thJuly.csv')
+    df_hist = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230709.csv')
 
     # Convert date column to datetime type
     df_hist['Date'] = pd.to_datetime(df_hist['Date'], format='%Y%m%d')
