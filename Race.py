@@ -407,7 +407,7 @@ def display_top_speed():
 
         # Find the horse(s) with the maximum top speed for each race
         top_speed_horses = df_top_speed.groupby('Race Name').apply(lambda x: x.loc[x['Top Speed'].idxmax()]).reset_index(drop=True)
-        top_speed_horses = top_speed_horses[['Time', 'Venue', 'Date', 'Top Speed', 'Jockey', 'Trainer', 'Horse']]
+        top_speed_horses = top_speed_horses[['Time', 'Venue', 'Date', 'Top Speed', 'Back Odd', 'Jockey', 'Trainer', 'Horse']]
 
         if len(top_speed_horses) > 0:
             # Sort the DataFrame by 'Time' column
