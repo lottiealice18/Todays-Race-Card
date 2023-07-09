@@ -3,7 +3,7 @@ import numpy as np
 import streamlit as st
 
 # Read the Excel file and drop rows where Country is South Africas
-df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230708.csv')
+df = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/9thJuly.csv')
 
 # Change the column name from 'RDB Rating' to 'Stats Ratings'
 df = df.rename(columns={'RDB Rating': 'Stats Ratings'})
@@ -330,7 +330,7 @@ import pandas as pd
 
 def horse_search():
     # Read the current day's CSV file and drop rows where Country is South Africa
-    current_day_csv_url = 'https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230708.csv'  # Replace with the actual URL for the current day's CSV file
+    current_day_csv_url = 'https://drive.google.com/uc?id=1W79DC6em9LffBxNjakRmK7vXuenmAhHu'  # Replace with the actual URL for the current day's CSV file
     df_current_day = pd.read_csv(current_day_csv_url)
 
     # Convert date format
@@ -433,7 +433,7 @@ def display_top_speed():
 
 def filter_rank():
     # Read historical data
-    df_hist = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/Todays_Card_20230708.csv')
+    df_hist = pd.read_csv('https://raw.githubusercontent.com/lottiealice18/Todays-Race-Card/main/9thJuly.csv')
 
     # Convert date column to datetime type
     df_hist['Date'] = pd.to_datetime(df_hist['Date'], format='%Y%m%d')
